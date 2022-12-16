@@ -32,7 +32,7 @@ public class Stats {
     }
 
     /** Produces a map for each installed app package name,
-     * with the corresponding time in foreground in seconds for that application.
+     *  with the corresponding time in foreground in seconds for that application.
      */
     @SuppressWarnings("ResourceType")
     public static HashMap<String, List<Double>> getUsageMap(Context context, long start, long end) {
@@ -49,8 +49,13 @@ public class Stats {
                 Double timeSecondsStart = new Double(timeMsFirst / 1000);
                 long timeMsStop = us.getLastTimeStamp();
                 Double timeSecondsStop = new Double(timeMsStop / 1000);
-                long timeMsLastUse = us.getLastTimeForegroundServiceUsed();
-                Double timeSecondsLastUse = new Double(timeMsLastUse / 1000);
+				
+				Double timeSecondsLastUse=0.0;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    long timeMsLastUse = us.getLastTimeForegroundServiceUsed();
+                    timeSecondsLastUse = (double) (timeMsLastUse / 1000);
+                }
+				
                 List<Double> listT = Arrays.asList(timeSeconds, timeSecondsStart, timeSecondsStop,timeSecondsLastUse);
                 usageMap.put(packageName, listT);
             } catch (Exception e) {
